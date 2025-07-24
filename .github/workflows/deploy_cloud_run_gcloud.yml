@@ -1,4 +1,4 @@
-name: Example - Deploy Cloud Run using gcloud
+name: Deploy Cloud Run using gcloud
 on:
   workflow_dispatch:
 
@@ -33,8 +33,8 @@ jobs:
           SERVICE_NAME: 'finmatrix-backend'
           WORKLOAD_SA_EMAIL: workload@hack-team-finmatrix.iam.gserviceaccount.com
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
-          AZURE_OPENAI_ENDPOINT: ${{ var.AZURE_OPENAI_ENDPOINT }}
-          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ var.AZURE_OPENAI_DEPLOYMENT_NAME }}
+          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
         run: |
           set -e
           gcloud run deploy "${SERVICE_NAME}" \
