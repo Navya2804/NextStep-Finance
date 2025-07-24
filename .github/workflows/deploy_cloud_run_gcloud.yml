@@ -1,4 +1,4 @@
-name: Example - Deploy Cloud Run using gcloud
+name: Deploy Cloud Run using gcloud
 on:
   workflow_dispatch:
 
@@ -30,29 +30,18 @@ jobs:
         id: deploy
         env:
           REGION: 'europe-west1'
-          SERVICE_NAME: 'github-cloud-run-service'
+          SERVICE_NAME: 'finmatrix-backend'
           WORKLOAD_SA_EMAIL: workload@hack-team-finmatrix.iam.gserviceaccount.com
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
         run: |
           set -e
           gcloud run deploy "${SERVICE_NAME}" \
             --region "${REGION}" \
-            --image "gcr.io/cloudrun/hello" \
-            --service-account="${WORKLOAD_SA_EMAIL}"  # Use your Workload SA to attach to resources
+            --image "us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend:latest" \
+            --service-account="${WORKLOAD_SA_EMAIL}" 
+            --set-env-vars AZURE_OPENAI_API_KEY="${AZURE_OPENAI_API_KEY}",AZURE_OPENAI_ENDPOINT="${AZURE_OPENAI_ENDPOINT}",AZURE_OPENAI_DEPLOYMENT_NAME="${AZURE_OPENAI_DEPLOYMENT_NAME}"
           
           url=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
           echo "url=${url}" >> "${GITHUB_OUTPUT}"
-
-      # Only needed to get an ID token to simulate an authenticated curl call.
-      # Not needed for deployment.
-      - name: 'Authenticate to GCP as workload SA for invocation'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          token_format: 'id_token'
-          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
-          service_account: workload@hack-team-finmatrix.iam.gserviceaccount.com  # Use your Workload SA to interact with resources
-          id_token_audience: ${{ steps.deploy.outputs.url }}
-          id_token_include_email: true
-
-      - name: 'Poke Cloud Run'
-        run: 'curl -H "Authorization: Bearer ${{ steps.auth.outputs.id_token }}" "${{ steps.deploy.outputs.url }}"'
