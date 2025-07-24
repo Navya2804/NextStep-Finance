@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 from flask import request, jsonify
 from openai import AzureOpenAI
 import json
+from flask_cors import CORS
 
 # Load environment variables from .env file
 load_dotenv()
 app = Flask(__name__)
+# Allow all CORS requests
+CORS(app)
 
 # Retrieve from environment variables
 OPENAI_API_KEY = os.getenv('AZURE_OPENAI_API_KEY')
