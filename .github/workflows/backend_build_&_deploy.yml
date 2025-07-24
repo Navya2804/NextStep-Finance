@@ -1,5 +1,6 @@
 name: Build, Push, and Deploy Backend to Cloud Run
 on:
+  workflow_dispatch:
   push:
     branches:
       - main 
