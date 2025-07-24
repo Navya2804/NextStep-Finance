@@ -9,5 +9,4 @@ COPY . .
 
 EXPOSE 8080
 
-# Use gunicorn for production and bind to 0.0.0.0:$PORT
 CMD ["python", "app.py"]
