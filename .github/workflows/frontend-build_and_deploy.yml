@@ -1,10 +1,10 @@
-name: Build, Push, and Deploy Backend to Cloud Run
+name: Build, Push, and Deploy Frontend to Cloud Run
 on:
   push:
     branches:
-      - main 
+      - create_gcp_bucket
     paths:
-      - 'backend/**'
+      - 'frontend/**'
 
 
 jobs:
@@ -17,9 +17,9 @@ jobs:
 
     env:
       REGION: 'europe-west1'
-      SERVICE_NAME: 'finmatrix-backend'
+      SERVICE_NAME: 'finmatrix-frontend'
       WORKLOAD_SA_EMAIL: workload@hack-team-finmatrix.iam.gserviceaccount.com
-      IMAGE_REPO: 'us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend'
+      IMAGE_REPO: 'us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-frontend/finmatrix-frontend'
       IMAGE_TAG: ${{ github.run_id }}
 
     steps:
@@ -39,18 +39,18 @@ jobs:
 
       - name: 'Create Artifact Registry repository'
         run: |            
-          if gcloud artifacts repositories describe finmatrix-backend --location=us-central1 &> /dev/null; then
-            echo "Artifact Registry repository 'finmatrix-backend' already exists"
+          if gcloud artifacts repositories describe finmatrix-frontend --location=us-central1 &> /dev/null; then
+            echo "Artifact Registry repository 'finmatrix-frontend' already exists"
           else
-            gcloud artifacts repositories create finmatrix-backend --location=us-central1 --repository-format=docker
+            gcloud artifacts repositories create finmatrix-frontend --location=us-central1 --repository-format=docker
           fi
 
       - name: 'docker config'
         run: 'gcloud auth configure-docker us-central1-docker.pkg.dev'
 
-      - name: 'Build Image from backend folder'
+      - name: 'Build Image from frontend folder'
         run: |
-          docker build -t $IMAGE_REPO:$IMAGE_TAG ./backend
+          docker build -t $IMAGE_REPO:$IMAGE_TAG ./frontend
 
       - name: 'Push Image'
         run: docker push $IMAGE_REPO:$IMAGE_TAG
@@ -64,10 +64,6 @@ jobs:
           service_account: infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
 
       - name: 'Deploy Cloud Run'
-        env:
-          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
-          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
-          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ vars.AZURE_OPENAI_DEPLOYMENT_NAME }}
         run: |
           gcloud run deploy "$SERVICE_NAME" \
             --region "$REGION" \
@@ -75,5 +71,4 @@ jobs:
             --port=8080 \
             --timeout=600s \
             --allow-unauthenticated \
-            --service-account="$WORKLOAD_SA_EMAIL" \
-            --set-env-vars AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY",AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT",AZURE_OPENAI_DEPLOYMENT_NAME="$AZURE_OPENAI_DEPLOYMENT_NAME"
+            --service-account="$WORKLOAD_SA_EMAIL"
