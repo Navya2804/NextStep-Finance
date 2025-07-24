@@ -1,5 +1,6 @@
 name: Build, Push, and Deploy Backend to Cloud Run
 on:
+  workflow_dispatch:
   push:
     branches:
       - main 
@@ -73,6 +74,7 @@ jobs:
             --region "$REGION" \
             --image "$IMAGE_REPO:$IMAGE_TAG" \
             --port=8080 \
+            --memory=4Gi
             --timeout=600s \
             --allow-unauthenticated \
             --service-account="$WORKLOAD_SA_EMAIL" \
