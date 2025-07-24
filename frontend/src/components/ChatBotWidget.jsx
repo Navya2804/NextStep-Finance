@@ -22,7 +22,7 @@ const ChatBotWidget = () => {
   setLoading(true);
 
   try {
-    const response = await fetch("http://localhost:8080/chat", {
+    const response = await fetch("https://finmatrix-backend-556498664277.europe-west1.run.app/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

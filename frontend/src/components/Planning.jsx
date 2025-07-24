@@ -10,21 +10,19 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 
-// Generate 30 days mock data
+// Generate 30-day mock data
 const generateDailyData = () => {
-  const inflow = [];
-  const outflow = [];
+  const data = [];
   for (let i = 0; i < 30; i++) {
     const date = dayjs().subtract(29 - i, "day").format("MMM D");
-    const inflowVal = 3000 + Math.floor(Math.random() * 2000); // 3000–5000
-    const outflowVal = 2000 + Math.floor(Math.random() * 1500); // 2000–3500
-    inflow.push({ date, value: inflowVal });
-    outflow.push({ date, value: outflowVal });
+    const inflow = 3000 + Math.floor(Math.random() * 2000);
+    const outflow = 2000 + Math.floor(Math.random() * 1500);
+    data.push({ date, inflow, outflow });
   }
-  return { inflow, outflow };
+  return data;
 };
 
-const { inflow, outflow } = generateDailyData();
+const data = generateDailyData();
 
 const Planning = () => {
   const [timeRange, setTimeRange] = useState("past_month");
@@ -37,9 +35,13 @@ const Planning = () => {
     { value: "past_year", label: "Past Year" },
   ];
 
+  const totalIncome = data.reduce((sum, d) => sum + d.inflow, 0);
+  const totalExpense = data.reduce((sum, d) => sum + d.outflow, 0);
+  const netProfit = totalIncome - totalExpense;
+
   return (
     <div className="p-4 space-y-6">
-      {/* Header with dropdown */}
+      {/* Header and Range Selector */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Planning & Suggestions</h2>
         <select
@@ -55,55 +57,79 @@ const Planning = () => {
         </select>
       </div>
 
-      {/* Charts */}
+      {/* Stat Cards */}
+<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  {/* Inflow */}
+  <div className="bg-blue-100 text-blue-900 rounded p-4 shadow">
+    <h4 className="font-semibold mb-1">Total Inflow</h4>
+    <p className="text-xl font-bold">₹{totalIncome.toFixed(2)}</p>
+  </div>
+
+  {/* Outflow */}
+  <div className="bg-red-100 text-red-900 rounded p-4 shadow">
+    <h4 className="font-semibold mb-1">Total Outflow</h4>
+    <p className="text-xl font-bold">₹{totalExpense.toFixed(2)}</p>
+  </div>
+
+  {/* Profit or Loss */}
+  <div
+    className={`rounded p-4 shadow ${
+      netProfit >= 0
+        ? "bg-green-100 text-green-900"
+        : "bg-orange-100 text-orange-900"
+    }`}
+  >
+    <h4 className="font-semibold mb-1">
+      {netProfit >= 0 ? "Profit" : "Loss"}
+    </h4>
+    <p className="text-xl font-bold">₹{Math.abs(netProfit).toFixed(2)}</p>
+  </div>
+</div>
+      {/* Graphs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Cash Inflow */}
+        {/* Inflow Chart */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
           <h3 className="font-medium mb-2">Cash Inflow (Revenue)</h3>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={inflow}>
+              <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
-                  stroke="#3b82f6" // blue
+                  dataKey="inflow"
+                  stroke="#22c55e" // green
                   strokeWidth={2}
                   dot={false}
+                  name="Inflow"
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-2 text-sm p-2 bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
-            Daily revenue trends observed over the past month.
-          </div>
         </div>
 
-        {/* Cash Outflow */}
+        {/* Outflow Chart */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
           <h3 className="font-medium mb-2">Cash Outflow (Expenditure)</h3>
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={outflow}>
+              <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
-                  stroke="#f59e0b" // amber
+                  dataKey="outflow"
+                  stroke="#ef4444" // red
                   strokeWidth={2}
                   dot={false}
+                  name="Outflow"
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-          <div className="mt-2 text-sm p-2 bg-yellow-50 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100 rounded">
-            Daily operational and fixed costs tracked across 30 days.
           </div>
         </div>
       </div>
