@@ -35,3 +35,79 @@ def get_transaction_summary(user_id, timeframe):
 
     return result
     
+def get_summery_by_category(user_id, timeframe, transaction_type):
+    conn = sqlite3.connect("sql/database.db")
+    cursor = conn.cursor()
+
+    if timeframe == 'monthly':
+        cursor.execute("SELECT category, SUM(amount) AS expense_amount FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', 'now') AND transaction_type = ? GROUP BY category ORDER BY category", (user_id, transaction_type))
+    elif timeframe == 'quarterly':
+        cursor.execute("SELECT category, SUM(amount) AS expense_amount FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-3 months')) AND transaction_type = ? GROUP BY category ORDER BY category", (user_id, transaction_type))
+    elif timeframe == 'half-yearly':
+        cursor.execute("SELECT category, SUM(amount) AS expense_amount FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-6 months')) AND transaction_type = ? GROUP BY category ORDER BY category", (user_id, transaction_type))
+    elif timeframe == 'yearly':
+        cursor.execute("SELECT category, SUM(amount) AS expense_amount FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-01-01', 'now') AND transaction_type = ? GROUP BY category ORDER BY category", (user_id, transaction_type))
+    else:
+        raise ValueError("Invalid timeframe")
+    
+    summary = cursor.fetchall()
+    conn.close()
+    
+    results = [{'category': row[0], 'expense_amount': row[1]} for row in summary]
+
+    return results
+
+def get_transaction_history(user_id, timeframe, page_number=1, page_size=10):
+    conn = sqlite3.connect("sql/database.db")
+    cursor = conn.cursor()
+
+    # Implement pagination in below queries
+    offset = (page_number - 1) * page_size
+    if timeframe == 'monthly':
+        cursor.execute("SELECT (date || ' ' || time) AS timestamp, category, description, amount, transaction_type, party_involved FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', 'now') LIMIT ? OFFSET ?", (user_id, page_size, offset))
+    elif timeframe == 'quarterly':
+        cursor.execute("SELECT (date || ' ' || time) AS timestamp, category, description, amount, transaction_type, party_involved FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-3 months')) LIMIT ? OFFSET ?", (user_id, page_size, offset))
+    elif timeframe == 'half-yearly':
+        cursor.execute("SELECT (date || ' ' || time) AS timestamp, category, description, amount, transaction_type, party_involved FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-6 months')) LIMIT ? OFFSET ?", (user_id, page_size, offset))
+    elif timeframe == 'yearly':
+        cursor.execute("SELECT (date || ' ' || time) AS timestamp, category, description, amount, transaction_type, party_involved FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-01-01', 'now') LIMIT ? OFFSET ?", (user_id, page_size, offset))
+    else:
+        raise ValueError("Invalid timeframe")
+    
+    history = cursor.fetchall()
+    conn.close()
+
+    return {
+        'total': get_transaction_count(user_id, timeframe),
+        'transactions': [
+            {
+                'timestamp': row[0],
+                'category': row[1],
+                'description': row[2],
+                'amount': row[3],
+                'transaction_type': row[4],
+                'party_involved': row[5]
+            }
+            for row in history
+        ]
+    }
+
+def get_transaction_count(user_id, timeframe):
+    conn = sqlite3.connect("sql/database.db")
+    cursor = conn.cursor()
+
+    if timeframe == 'monthly':
+        cursor.execute("SELECT COUNT(1) as cnt FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', 'now')", (user_id,))
+    elif timeframe == 'quarterly':
+        cursor.execute("SELECT COUNT(1) FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-3 months'))", (user_id,))
+    elif timeframe == 'half-yearly':
+        cursor.execute("SELECT COUNT(1) FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-6 months'))", (user_id,))
+    elif timeframe == 'yearly':
+        cursor.execute("SELECT COUNT(1) FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-01-01', 'now')", (user_id,))
+    else:
+        raise ValueError("Invalid timeframe")
+    
+    count = cursor.fetchone()[0]
+    conn.close()
+
+    return count
