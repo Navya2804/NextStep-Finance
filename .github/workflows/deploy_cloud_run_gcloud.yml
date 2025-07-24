@@ -30,7 +30,7 @@ jobs:
         id: deploy
         env:
           REGION: 'europe-west1'
-          SERVICE_NAME: 'github-cloud-run-service'
+          SERVICE_NAME: 'finmatrix-backend'
           WORKLOAD_SA_EMAIL: workload@hack-team-finmatrix.iam.gserviceaccount.com
         run: |
           set -e
@@ -41,18 +41,3 @@ jobs:
           
           url=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
           echo "url=${url}" >> "${GITHUB_OUTPUT}"
-
-      # Only needed to get an ID token to simulate an authenticated curl call.
-      # Not needed for deployment.
-      - name: 'Authenticate to GCP as workload SA for invocation'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          token_format: 'id_token'
-          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
-          service_account: workload@hack-team-finmatrix.iam.gserviceaccount.com  # Use your Workload SA to interact with resources
-          id_token_audience: ${{ steps.deploy.outputs.url }}
-          id_token_include_email: true
-
-      - name: 'Poke Cloud Run'
-        run: 'curl -H "Authorization: Bearer ${{ steps.auth.outputs.id_token }}" "${{ steps.deploy.outputs.url }}"'
