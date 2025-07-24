@@ -1,3 +1,4 @@
+import os
 import routes
 from database import init_db
 from app import app
