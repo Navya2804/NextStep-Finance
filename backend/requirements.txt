@@ -2,3 +2,6 @@ flask
 flask-cors
 python-dotenv
 openai
+pandas
+openpyxl
+SQLAlchemy==2.0.41
