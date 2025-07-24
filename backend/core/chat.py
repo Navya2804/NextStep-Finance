@@ -17,7 +17,7 @@ def chat(context : list, prompt : str):
         api_version="2024-12-01-preview"
     )
     context.append({"role": "user", "content": prompt})
-
+    print(prompt)
     response = client.chat.completions.create(
         model=AZURE_OPENAI_DEPLOYMENT_NAME,
         messages=context,
