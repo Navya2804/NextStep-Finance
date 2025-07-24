@@ -1,6 +1,9 @@
 name: Build, Push, and Deploy Backend to Cloud Run
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - create_gcp_bucket 
+
 
 jobs:
   build-push-deploy:
