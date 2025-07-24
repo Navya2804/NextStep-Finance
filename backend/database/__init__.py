@@ -1,4 +1,3 @@
-# Write init_db function to intialize the chat_history sqlite tables
 import sqlite3
 
 def init_db():
