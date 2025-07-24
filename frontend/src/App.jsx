@@ -28,7 +28,6 @@ function App() {
                 <Route path="/planning" element={<Planning />} />
                 <Route path="/inclusion" element={<Wallet />} />
                 <Route path="/goals" element={<Community />} />
-                <Route path="/profile" element={<Profile />} />
                 <Route path="/contact" element={<Contact />} />
               </Routes>
             </main>
