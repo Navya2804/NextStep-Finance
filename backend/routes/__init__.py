@@ -1,1 +1,1 @@
-from . import budget, chat, goals
+from . import budget, chat, forecast, goals
