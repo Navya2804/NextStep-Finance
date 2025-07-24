@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-from app import app
+from app import app, cache
 from flask import request, make_response, jsonify
 from database.reader import get_profit_loss
 
@@ -22,6 +22,7 @@ def get_daily_profit():
 
 
 @app.route('/goals/trend-reason', methods=['GET'])
+@cache.cached(timeout=24 * 60 * 60)
 def get_trend_reason():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')
@@ -53,6 +54,7 @@ def get_trend_reason():
     return json.loads(response)
 
 @app.route('/goals/trend-improvement', methods=['GET'])
+@cache.cached(timeout=24 * 60 * 60)
 def get_trend_improvement():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')

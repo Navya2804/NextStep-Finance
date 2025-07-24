@@ -1,7 +1,7 @@
 import json
 
 from datetime import datetime, timedelta
-from app import app
+from app import app, cache
 from flask import request, make_response, jsonify
 from database.reader import get_transaction_summary, get_summery_by_category, get_transaction_history
 
@@ -46,6 +46,7 @@ def transaction_history():
 
 
 @app.route('/budget/budget-summary', methods=['GET'])
+@cache.cached(timeout=24 * 60 * 60)
 def get_budget_summary():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')
