@@ -32,12 +32,16 @@ jobs:
           REGION: 'europe-west1'
           SERVICE_NAME: 'finmatrix-backend'
           WORKLOAD_SA_EMAIL: workload@hack-team-finmatrix.iam.gserviceaccount.com
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ var.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_DEPLOYMENT_NAME: ${{ var.AZURE_OPENAI_DEPLOYMENT_NAME }}
         run: |
           set -e
           gcloud run deploy "${SERVICE_NAME}" \
             --region "${REGION}" \
             --image "us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend:latest" \
             --service-account="${WORKLOAD_SA_EMAIL}" 
+            --set-env-vars AZURE_OPENAI_API_KEY="${AZURE_OPENAI_API_KEY}",AZURE_OPENAI_ENDPOINT="${AZURE_OPENAI_ENDPOINT}",AZURE_OPENAI_DEPLOYMENT_NAME="${AZURE_OPENAI_DEPLOYMENT_NAME}"
           
           url=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
           echo "url=${url}" >> "${GITHUB_OUTPUT}"
