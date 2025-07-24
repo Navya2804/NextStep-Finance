@@ -68,6 +68,7 @@ jobs:
           gcloud run deploy "$SERVICE_NAME" \
             --region "$REGION" \
             --image "$IMAGE_REPO:$IMAGE_TAG" \
+            --port=8080 \
             --timeout=600s \
             --allow-unauthenticated \
             --service-account="$WORKLOAD_SA_EMAIL"
