@@ -2,7 +2,7 @@ name: Build, Push, and Deploy Frontend to Cloud Run
 on:
   push:
     branches:
-      - create_gcp_bucket
+      - main
     paths:
       - 'frontend/**'
 
