@@ -1,10 +1,12 @@
 from app import app
-import sqlite3
 import os
 import json
 from dotenv import load_dotenv
 from flask import request
 from openai import AzureOpenAI
+from database.writer import save_chat_message
+from database.reader import get_chat_history
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,13 +28,7 @@ def chat():
     prompt = data.get('prompt', '')
     user_id = data.get('user_id', 'default_user')
 
-    conn = sqlite3.connect('chat_history.db')
-    cursor = conn.cursor()
-
-    # Get the chat_history from sqlite for given user_id. messages should be in format {"role": <Role column value>, "content": "Message column value"}
-    cursor.execute("SELECT role, message FROM chat_history WHERE user_id = ? ORDER BY timestamp ASC", (user_id,))
-    history = cursor.fetchall()
-    messages = [{"role": row[0], "content": row[1]} for row in history]
+    messages = get_chat_history(user_id)
     messages.append({"role": "user", "content": prompt})
 
     response = client.chat.completions.create(
@@ -43,11 +39,8 @@ def chat():
     
     # save userid, request promt and response message in sqlite database
     response_content = json.loads(response.json()).get('choices')[0].get('message').get('content')
-    cursor.execute("INSERT INTO chat_history (user_id, role, message) VALUES (?, ?, ?)",
-                   (user_id, 'user', prompt))
-    cursor.execute("INSERT INTO chat_history (user_id, role, message) VALUES (?, ?, ?)",
-                   (user_id, 'assistant', response_content))
-    conn.commit()
-    conn.close()
+    
+    save_chat_message(user_id, 'user', prompt)
+    save_chat_message(user_id, 'assistant', response_content)
     
     return json.loads(response.json()).get('choices')[0].get('message').get('content')
