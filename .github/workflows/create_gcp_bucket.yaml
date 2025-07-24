@@ -1,0 +1,37 @@
+name: Create GCP Bucket
+on:
+  workflow_dispatch:
+
+jobs:
+  create-bucket:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Authenticate to GCP'
+        uses: 'google-github-actions/auth@v4'
+        with:
+          export_environment_variables: true
+          project_id: hack-team-finmatrix
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
+          service_account: infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Set up Terraform'
+        uses: hashicorp/setup-terraform@v2
+
+      - name: 'Terraform Init'
+        working-directory: terraform
+        run: terraform init
+
+      - name: 'Terraform Apply'
+        working-directory: terraform
+        run: terraform apply -auto-approve
