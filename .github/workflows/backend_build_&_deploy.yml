@@ -71,7 +71,6 @@ jobs:
             --region "$REGION" \
             --image "$IMAGE_REPO:$IMAGE_TAG" \
             --port=8080 \
-            --allow-unauthenticated \
             --timeout=600s \
             --service-account="$WORKLOAD_SA_EMAIL" \
             --set-env-vars AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY",AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT",AZURE_OPENAI_DEPLOYMENT_NAME="$AZURE_OPENAI_DEPLOYMENT_NAME"
