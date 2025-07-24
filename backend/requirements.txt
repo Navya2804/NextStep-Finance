@@ -6,3 +6,6 @@ pandas
 openpyxl
 Flask-Caching
 SQLAlchemy==2.0.41
+tensorflow
+joblib
+numpy

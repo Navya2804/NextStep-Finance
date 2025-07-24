@@ -1,4 +1,4 @@
-from app import app
+from app import app, cache
 from flask import request
 from flask import Flask, request, jsonify
 import pandas as pd
@@ -59,6 +59,7 @@ def generate_forecast(n=20):
     return predictions
 
 @app.route("/forecast", methods=["GET"])
+@cache.cached(timeout=24 * 60 * 60)
 def forecast_endpoint():
     try:
         n = int(request.args.get("n", 20))
