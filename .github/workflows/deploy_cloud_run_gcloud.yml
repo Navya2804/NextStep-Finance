@@ -36,8 +36,8 @@ jobs:
           set -e
           gcloud run deploy "${SERVICE_NAME}" \
             --region "${REGION}" \
-            --image "gcr.io/cloudrun/hello" \
-            --service-account="${WORKLOAD_SA_EMAIL}"  # Use your Workload SA to attach to resources
+            --image "us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend:latest" \
+            --service-account="${WORKLOAD_SA_EMAIL}" 
           
           url=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
           echo "url=${url}" >> "${GITHUB_OUTPUT}"
