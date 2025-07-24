@@ -5,7 +5,11 @@ import pandas
 import shutil
 
 def init_db():
-    shutil.rmtree("sql")
+    try:
+        shutil.rmtree("sql")
+    except FileNotFoundError:
+        pass
+    
     os.mkdir("sql")
     conn = sqlite3.connect("sql/database.db")
     insert_all_tables(conn)
