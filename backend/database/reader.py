@@ -1,7 +1,7 @@
 import sqlite3
 
 def get_chat_history(user_id):
-    conn = sqlite3.connect('chat_history.db')
+    conn = sqlite3.connect("sql/database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT role, message FROM chat_history WHERE user_id = ? ORDER BY timestamp ASC", (user_id,))
     history = cursor.fetchall()
@@ -9,7 +9,7 @@ def get_chat_history(user_id):
     return [{"role": row[0], "content": row[1]} for row in history]
 
 def get_transaction_summary(user_id, timeframe):
-    conn = sqlite3.connect('data/transactions.db')
+    conn = sqlite3.connect("sql/database.db")
     cursor = conn.cursor()
 
     if timeframe == 'monthly':
