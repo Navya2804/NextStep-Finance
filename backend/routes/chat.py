@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from flask import request
 from openai import AzureOpenAI
 from database.writer import save_chat_message
-from database.reader import get_chat_history
+from database.reader import *
 
 
 # Load environment variables from .env file
@@ -28,7 +28,11 @@ def chat():
 
     data = request.json
     prompt = data.get('prompt', '')
-    user_id = data.get('user_id', 'default_user')
+    user_id = data.get('user_id', 'hariya-prasad')
+
+    transaction_summery = get_transaction_summary(user_id, 'monthly')
+    category_wise_revenue_summary = get_summery_by_category(user_id, 'monthly', 'Inflow')
+    category_wise_expense_summary = get_summery_by_category(user_id, 'monthly', 'Outflow')
 
     messages = [{'role': 'system', 'content': """
     Purpose:
@@ -43,20 +47,18 @@ Transaction Pattern Analysis:
 Spot increases or decreases in spending or income.
 Highlight unusual or frequent transactions.
 Detect categories where the user spends most (e.g., food, travel, shopping).
-Insights with Reasoning:
-For each insight, respond in this structure:
-Reason Heading: Short title
-Reason Summary: Easy explanation
-Criticality: High, Medium, or Less (based on impact)
-Recommendations:
 Suggest ways to save more, reduce spending, or optimize cash flow.
 Provide budget tips or alerts (e.g., “You spent more on snacks this month”).
 Trend Detection Over Time:
 Compare current vs past months.
 Flag potential future issues (e.g., recurring subscriptions, rising bills).
-    """}]
+    """},
+    {'role': 'system', 'content': f'transaction summery of last month is {json.dumps(transaction_summery)}'},
+    {'role': 'system', 'content': f'category wise revenue summary of last month is {json.dumps(category_wise_revenue_summary)}'},
+    {'role': 'system', 'content': f'category wise expense summary of last month is {json.dumps(category_wise_expense_summary)}'},
+    {'role': 'system', 'content': 'Use above financial details to answer user queries wherever possible'}
+    ]
     messages.extend(get_chat_history(user_id))
-    print(messages)
     messages.append({"role": "user", "content": prompt})
 
     response = client.chat.completions.create(
