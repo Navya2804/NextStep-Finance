@@ -1,0 +1,44 @@
+name: Docker Push to Artifact Registry (Backend)
+on:
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Authenticate to GCP as workload SA for docker push to artifact registry'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          export_environment_variables: true
+          project_id: hack-team-finmatrix
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
+          service_account: workload@hack-team-finmatrix.iam.gserviceaccount.com
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Create Artifact Registry repository'
+        run: |            
+          if gcloud artifacts repositories describe finmatrix-backend --location=us-central1 &> /dev/null; then
+            echo "Artifact Registry repository 'finmatrix-backend' already exists"
+          else
+            gcloud artifacts repositories create finmatrix-backend --location=us-central1 --repository-format=docker
+          fi
+
+      - name: 'docker config'
+        run: 'gcloud auth configure-docker us-central1-docker.pkg.dev'
+
+      - name: 'Build Image from backend folder'
+        run: |
+          docker build -t us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend ./backend
+
+      - name: 'Push Image'
+        run: docker push us-central1-docker.pkg.dev/hack-team-finmatrix/finmatrix-backend/finmatrix-backend

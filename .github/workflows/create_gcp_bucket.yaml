@@ -31,4 +31,4 @@ jobs:
           BUCKET_LOCATION: 'europe-west1'
         run: |
           set -e
-          gcloud storage buckets create gs://${BUCKET_NAME} --location=${BUCKET_LOCATION}
+          gcloud storage buckets create gs://${BUCKET_NAME} --location=${BUCKET_LOCATION} --uniform-bucket-level-access --public-access-prevention'
