@@ -55,7 +55,8 @@ Trend Detection Over Time:
 Compare current vs past months.
 Flag potential future issues (e.g., recurring subscriptions, rising bills).
     """}]
-    messages = messages.extend(get_chat_history(user_id))
+    messages.extend(get_chat_history(user_id))
+    print(messages)
     messages.append({"role": "user", "content": prompt})
 
     response = client.chat.completions.create(
