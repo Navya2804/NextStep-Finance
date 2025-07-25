@@ -86,7 +86,7 @@ export default function Budgeting({lang}) {
     return transactions.filter((t) => t.transaction_type === filterType);
   }, [transactions, filterType]);
 
-  const purchaseData = expenseBreakdown.map((item) => ({
+  const purchaseData = revenueBreakdown.map((item) => ({
     name: item.category,
     value: item.expense_amount,
   }));
