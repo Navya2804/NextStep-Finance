@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { BASEURL_ENDPOINT, USER } from "./constant";
  
-export default function GoalsDashboard() {
+export default function GoalsDashboard({lang}) {
   const [timeline, setTimeline] = useState("monthly");
   const [chartData, setChartData] = useState([]);
   const [goalAmount, setGoalAmount] = useState(0);
@@ -21,10 +21,11 @@ export default function GoalsDashboard() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = USER;
-  const lang = "english";
+  
  
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Fetching data...");
       setLoading(true);
       try {
         const [profitRes, reasonRes, improvementRes] = await Promise.all([
@@ -60,7 +61,7 @@ export default function GoalsDashboard() {
     };
  
     fetchData();
-  }, [timeline]);
+  }, [timeline,lang]);
  
   return (
 <div className="p-6 space-y-10 text-gray-900 dark:text-white">
@@ -69,7 +70,11 @@ export default function GoalsDashboard() {
 <select
           className="p-2 border dark:bg-gray-800 dark:text-white rounded"
           value={timeline}
-          onChange={(e) => setTimeline(e.target.value)}
+          onChange={(e) => {
+            console.log(e.target.value);
+           setTimeline(e.target.value);
+           }
+          }
 >
 <option value="monthly">Monthly</option>
 <option value="quarterly">Quarterly</option>
