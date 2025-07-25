@@ -24,7 +24,7 @@ export default function Budgeting() {
   const [revenueBreakdown, setRevenueBreakdown] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [aiInsights, setAiInsights] = useState([]);
-  const [filterType, setFilterType] = useState("inflow");
+  const [filterType, setFilterType] = useState("Inflow");
   const [selectedMonth, setSelectedMonth] = useState("monthly");
   const [loading, setLoading] = useState(false);
 
@@ -249,21 +249,21 @@ export default function Budgeting() {
               <div className="flex gap-2">
                 <button
                   className={`px-3 py-1 rounded text-sm ${
-                    filterType === "inflow"
+                    filterType === "Inflow"
                       ? "bg-green-600 text-white"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                   }`}
-                  onClick={() => setFilterType("inflow")}
+                  onClick={() => setFilterType("Inflow")}
                 >
                   Inflows
                 </button>
                 <button
                   className={`px-3 py-1 rounded text-sm ${
-                    filterType === "outflow"
+                    filterType === "Outflow"
                       ? "bg-red-600 text-white"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                   }`}
-                  onClick={() => setFilterType("outflow")}
+                  onClick={() => setFilterType("Outflow")}
                 >
                   Outflows
                 </button>
@@ -293,7 +293,7 @@ export default function Budgeting() {
                       <tr
                         key={idx}
                         className={`border-b dark:border-gray-700 text-gray-800 dark:text-gray-200 ${
-                          t.transaction_type === "inflow"
+                          t.transaction_type === "Inflow"
                             ? "bg-green-50 dark:bg-green-900"
                             : "bg-red-50 dark:bg-red-900"
                         }`}
