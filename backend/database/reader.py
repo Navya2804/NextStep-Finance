@@ -53,9 +53,13 @@ def get_profit_loss(user_id, timeframe):
     results = cursor.fetchall()
     data_array = []
     goal_amount = None
+    previous_sum = 0
     for row in results:
         goal_amount, profit_sum, timestamp = row  # Unpack the row into variables
         # Create a dictionary for the current row
+        profit_sum += previous_sum
+        previous_sum = profit_sum
+        
         data_entry = {
             'profit': profit_sum,
             'timestamp': timestamp

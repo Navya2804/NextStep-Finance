@@ -138,7 +138,7 @@ The following APIs have been activated on your project. You cannot activate othe
 
 **Permissions:**
 Every team member has the following roles at the project level:
-* organizations/984428091370/roles/serviceAccountMetadataViewer
+* roles/aiplatform.admin
 * roles/aiplatform.migrator
 * roles/aiplatform.tensorboardWebAppUser
 * roles/aiplatform.user
@@ -173,6 +173,7 @@ Every team member has the following roles at the project level:
 * roles/datastudio.viewer
 * roles/dialogflow.admin
 * roles/discoveryengine.admin
+* roles/discoveryengine.notebookOwner
 * roles/documentai.editor
 * roles/errorreporting.admin
 * roles/eventarc.developer
@@ -234,7 +235,8 @@ Workload SA (`workload@hack-team-finmatrix.iam.gserviceaccount.com`): Attach thi
 * roles/dialogflow.client
 * roles/dialogflow.reader
 * roles/discoveryengine.admin
-* roles/documentai.apiUser
+* roles/discoveryengine.notebookOwner
+* roles/documentai.viewer
 * roles/errorreporting.writer
 * roles/eventarc.connectionPublisher
 * roles/eventarc.eventReceiver
@@ -270,6 +272,10 @@ The default service accounts are de-privileged. You **must** attach your Workloa
 
 **Access:** All team members have **maintainer** access to this repository.
 **GitHub Actions Variables:** A set of useful variables has been populated for you:
+* vars.APP_ENGINE_DEFAULT_SA_EMAIL - The email address of the default App Engine service account.: hack-team-finmatrix@appspot.gserviceaccount.com
+* vars.APP_ENGINE_DEFAULT_SA_ID - The fully qualified name of the default App Engine service account.: projects/hack-team-finmatrix/serviceAccounts/hack-team-finmatrix@appspot.gserviceaccount.com
+* vars.COMPUTE_DEFAULT_SA_EMAIL - The email address of the default Compute Engine service account.: 556498664277-compute@developer.gserviceaccount.com
+* vars.COMPUTE_DEFAULT_SA_ID - The fully qualified name of the default Compute Engine service account.: projects/hack-team-finmatrix/serviceAccounts/556498664277-compute@developer.gserviceaccount.com
 * vars.INFRA_SA_EMAIL - The email address representation of the SA you can use to deploy infrastructure. It has the same access rights as human team members.: infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
 * vars.INFRA_SA_ID - The fully qualified ID representation of the SA you can use to deploy infrastructure.: projects/hack-team-finmatrix/serviceAccounts/infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
 * vars.OPENSHIFT_NAMESPACE - The OpenShift namespace for your team: finmatrix-official
@@ -291,6 +297,10 @@ Your workspace is VCS-driven. Pushing to the `/terraform` directory will trigger
 The Google provider is pre-configured to use your infrastructure SA.
 A set of useful input variables has been populated for you:
 
+* app_engine_default_sa_email - The email address of the default App Engine service account.: hack-team-finmatrix@appspot.gserviceaccount.com
+* app_engine_default_sa_id - The fully qualified name of the default App Engine service account.: projects/hack-team-finmatrix/serviceAccounts/hack-team-finmatrix@appspot.gserviceaccount.com
+* compute_default_sa_email - The email address of the default Compute Engine service account.: 556498664277-compute@developer.gserviceaccount.com
+* compute_default_sa_id - The fully qualified name of the default Compute Engine service account.: projects/hack-team-finmatrix/serviceAccounts/556498664277-compute@developer.gserviceaccount.com
 * infra_sa_email - The email address representation of the SA you can use to deploy infrastructure. It has the same access rights as human team members.: infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
 * infra_sa_id - The fully qualified ID representation of the SA you can use to deploy infrastructure.: projects/hack-team-finmatrix/serviceAccounts/infrastructure@hack-team-finmatrix.iam.gserviceaccount.com
 * openshift_namespace - The OpenShift namespace for your team: finmatrix-official
