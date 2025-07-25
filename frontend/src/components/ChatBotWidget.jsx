@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PaperPlaneIcon, Cross1Icon } from "@radix-ui/react-icons";
 import botAvatar from "../assets/bot-avatar.png"; // <-- Add your custom avatar image here
+import {USER} from "./constant.js"
 
 const ChatBotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +30,7 @@ const ChatBotWidget = () => {
       },
       body: JSON.stringify({
         prompt: input,
-        user_id:"jayant",
+        user_id:USER,
       }),
     });
 
