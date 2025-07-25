@@ -22,7 +22,7 @@ def get_daily_profit():
 
 
 @app.route('/goals/trend-reason', methods=['GET'])
-@cache.cached(timeout=24 * 60 * 60)
+@cache.cached(timeout=24 * 60 * 60, query_string=True)
 def get_trend_reason():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')
@@ -54,7 +54,7 @@ def get_trend_reason():
     return json.loads(response)
 
 @app.route('/goals/trend-improvement', methods=['GET'])
-@cache.cached(timeout=24 * 60 * 60)
+@cache.cached(timeout=24 * 60 * 60, query_string=True)
 def get_trend_improvement():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')

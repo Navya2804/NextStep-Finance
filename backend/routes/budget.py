@@ -46,7 +46,7 @@ def transaction_history():
 
 
 @app.route('/budget/budget-summary', methods=['GET'])
-@cache.cached(timeout=24 * 60 * 60)
+@cache.cached(timeout=24 * 60 * 60, query_string=True)
 def get_budget_summary():
     user_id = request.args.get('user_id', 'default_user')
     lang = request.args.get('lang')
