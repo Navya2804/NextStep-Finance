@@ -40,13 +40,13 @@ def get_profit_loss(user_id, timeframe):
     cursor = conn.cursor()
 
     if timeframe == 'monthly':
-        cursor.execute("SELECT 15000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', 'now') GROUP BY Date", (user_id,))
+        cursor.execute("SELECT 150000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', 'now') GROUP BY Date", (user_id,))
     elif timeframe == 'quarterly':
-        cursor.execute("SELECT 82000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-3 months')) GROUP BY Date", (user_id,))
+        cursor.execute("SELECT 820000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-3 months')) GROUP BY Date", (user_id,))
     elif timeframe == 'half-yearly':
-        cursor.execute("SELECT 160000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-6 months')) GROUP BY Date", (user_id,))
+        cursor.execute("SELECT 1600000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-%m-01', date('now', '-6 months')) GROUP BY Date", (user_id,))
     elif timeframe == 'yearly':
-        cursor.execute("SELECT 235000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-01-01', 'now') GROUP BY Date", (user_id,))
+        cursor.execute("SELECT 2350000, SUM(CASE WHEN transaction_type = 'Inflow' THEN Amount ELSE 0 END) - SUM(CASE WHEN transaction_type = 'Outflow' THEN Amount ELSE 0 END), date FROM transactions WHERE user_id = ? AND Date >= strftime('%Y-01-01', 'now') GROUP BY Date", (user_id,))
     else:
         raise ValueError("Invalid timeframe")
 

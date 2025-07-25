@@ -16,13 +16,13 @@ const Sidebar = () => {
  
 
 const links = [
-  { to: '/', icon: faHome, label: 'Home' },
+  // { to: '/', icon: faHome, label: 'Home' },
   { to: '/budgeting', icon: faWallet, label: 'Budgeting' },
   { to: '/planning', icon: faLightbulb, label: 'Planning & Suggestions' },
   { to: '/goals', icon: faBullseye, label: 'Goals' },
   { to: '/inclusion', icon: faHandshake, label: 'Financial Inclusion' },
-  { to: '/profile', icon: faUser, label: 'Personal information' },
-  { to: '/contact', icon: faEnvelope, label: 'Contact Us ' },
+  // { to: '/profile', icon: faUser, label: 'Personal information' },
+  // { to: '/contact', icon: faEnvelope, label: 'Contact Us ' },
 ];
 
   return (
